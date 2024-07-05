@@ -9,6 +9,7 @@ import LineChart from "../../components/LineChart";
 import { colors } from "../../theme";
 import Select from 'react-select'
 import { formatDate } from "../../utils/parseDate";
+import UploadCsvModal from "../upload-csv/UploadCsvModal";
 
 const Dashboard = () => {
     const [equipments, setEquipments] = useState([]);
@@ -16,6 +17,22 @@ const Dashboard = () => {
     const [timeFrame, setTimeFrame] = useState('1m');
     const [averageMeasurement, setAverageMeasurement] = useState(0);
     const [dataChart, setDataChart] = useState([]);
+
+    const [modalOpen, setModalOpen] = useState(false);
+
+    const handleClickOpen = () => {
+        setModalOpen(true);
+    };
+
+    const handleClose = () => {
+        console.log('close');   
+        setModalOpen(false);
+    };
+
+    const handleFileUpload = (file) => {
+        console.log(file); 
+    };
+    console.log({modalOpen});
 
     const dot = (color = 'transparent') => ({
         alignItems: 'center',
@@ -64,10 +81,6 @@ const Dashboard = () => {
         fetchEquipments();
     }, []);
 
-    console.log({selectedEquipment});
-    console.log({dataChart});
-    console.log({averageMeasurement});
-
     useEffect(() => {
         if(!selectedEquipment) return;
         const fetchSensorData = async () => {
@@ -83,32 +96,31 @@ const Dashboard = () => {
         fetchSensorData();
 
     }, [selectedEquipment, timeFrame]);
-
-
     
 
     return (
-        <Box m="20px">
+        <Box ml="20px" p="20px">
         {/* HEADER */}
         <Box display="flex" justifyContent="space-between" alignItems="center">
             <Header title="DASHBOARD" subtitle="Welcome to your dashboard" />
 
             <Box>
-            <Button
-                sx={{
-                backgroundColor: colors.blueAccent[700],
-                color: colors.grey[100],
-                fontSize: "14px",
-                fontWeight: "bold",
-                padding: "10px 20px",
-                }}
-            >
-                <UploadFileOutlined sx={{ mr: "10px" }} />
-                Upload CSV`s
-            </Button>
+                <Button
+                    onClick={handleClickOpen}
+                    sx={{
+                    backgroundColor: colors.blueAccent[700],
+                    color: colors.grey[100],
+                    fontSize: "14px",
+                    fontWeight: "bold",
+                    padding: "10px 20px",
+                    }}
+                >
+                    <UploadFileOutlined sx={{ mr: "10px" }} />
+                    Upload CSV`s
+                </Button>
             </Box>
         </Box>
-
+        {modalOpen && <UploadCsvModal  onClose={handleClose} onFileUpload={handleFileUpload} />}
         <Box mb="20px" width="350px" >
             <Select 
                 options={equipments}
