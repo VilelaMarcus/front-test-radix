@@ -19,11 +19,6 @@ const LineChart = ({ dataChart = [], sensor= '', isDashboard = false }) => {
     },
   ];
 
-  console.log({ transformData });
-  console.log({ dataChart });
-  console.log({ mockLineData });
-
-
   return (
     <ResponsiveLine
       data={mockLineData}

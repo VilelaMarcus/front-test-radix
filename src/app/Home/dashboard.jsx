@@ -1,8 +1,6 @@
 "use client"
 import { useState, useEffect } from "react";
-import { Box, Button, IconButton, Typography, ButtonGroup } from "@mui/material";
-import { mockTransactions } from "../../data/mockData";
-import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
+import { Box, Button, Typography, ButtonGroup } from "@mui/material";
 import { UploadFileOutlined } from "@mui/icons-material";
 import Header from "../../components/Header";
 import LineChart from "../../components/LineChart";
@@ -19,24 +17,37 @@ const Dashboard = () => {
     const [dataChart, setDataChart] = useState([]);
     const [modalOpen, setModalOpen] = useState(false);
 
-    const handleRangeChange = (range) => {
-        setTimeFrame(range);
-        // Aqui você pode chamar uma função para atualizar os dados do gráfico com base no novo intervalo selecionado
-    };
-
     const handleClickOpen = () => {
         setModalOpen(true);
     };
 
     const handleClose = () => {
-        console.log('close');   
         setModalOpen(false);
     };
 
-    const handleFileUpload = (file) => {
-        console.log(file); 
-    };
-    console.log({modalOpen});
+
+    const handleFileUpload = async (file) => {
+        const formData = new FormData();
+        formData.append("csvFile", file);
+
+        try {
+        const response = await fetch("http://localhost:3005/api/upload-csv", {
+            method: "POST",
+            body: formData,
+        });
+
+        if (response.ok) {
+            const result = await response.json();
+            alert(`File uploaded successfully: ${result.message}`);          
+        } else {
+            alert("Failed to upload file");
+        }
+        setModalOpen(false); 
+        } catch (error) {
+        alert(`An error occurred while uploading the file: ${error.message}`);
+        }
+    };      
+
 
     const dot = (color = 'transparent') => ({
         alignItems: 'center',
@@ -89,7 +100,6 @@ const Dashboard = () => {
         if(!selectedEquipment) return;
         const fetchSensorData = async () => {
         const response = await fetch(`http://localhost:3005/api/sensor-average?timeframe=${timeFrame}&sensor=${selectedEquipment}`);
-        console.log({response});
         const data = await response.json();
         setDataChart(data);
         
@@ -149,25 +159,25 @@ const Dashboard = () => {
                     <Box display="flex" justifyContent="space-between" alignItems="center" m={2}>
                         s<ButtonGroup variant="outlined" color="primary" aria-label="Intervalo de Datas">
                             <Button
-                                onClick={() => handleRangeChange("24h")}
+                                onClick={() => setTimeFrame("24h")}
                                 variant={timeFrame === "24h" ? "contained" : "outlined"}
                             >
                                 24h
                             </Button>
                             <Button
-                                onClick={() => handleRangeChange("48h")}
+                                onClick={() => setTimeFrame("48h")}
                                 variant={timeFrame === "48h" ? "contained" : "outlined"}
                             >
                                 48h
                             </Button>
                             <Button
-                                onClick={() => handleRangeChange("1w")}
+                                onClick={() => setTimeFrame("1w")}
                                 variant={timeFrame === "1w" ? "contained" : "outlined"}
                             >
                                 1w
                             </Button>
                             <Button
-                                onClick={() => handleRangeChange("1m")}
+                                onClick={() => setTimeFrame("1m")}
                                 variant={timeFrame === "1m" ? "contained" : "outlined"}
                             >
                                 1m
