@@ -1,6 +1,6 @@
 "use client"
 import { useState, useEffect } from "react";
-import { Box, Button, IconButton, Typography } from "@mui/material";
+import { Box, Button, IconButton, Typography, ButtonGroup } from "@mui/material";
 import { mockTransactions } from "../../data/mockData";
 import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
 import { UploadFileOutlined } from "@mui/icons-material";
@@ -17,8 +17,12 @@ const Dashboard = () => {
     const [timeFrame, setTimeFrame] = useState('1m');
     const [averageMeasurement, setAverageMeasurement] = useState(0);
     const [dataChart, setDataChart] = useState([]);
-
     const [modalOpen, setModalOpen] = useState(false);
+
+    const handleRangeChange = (range) => {
+        setTimeFrame(range);
+        // Aqui você pode chamar uma função para atualizar os dados do gráfico com base no novo intervalo selecionado
+    };
 
     const handleClickOpen = () => {
         setModalOpen(true);
@@ -136,94 +140,115 @@ const Dashboard = () => {
             gridAutoRows="140px"
             gap="20px"
         >
-            
             {/* ROW 1 */}
             <Box
-            gridColumn="span 8"
-            gridRow="span 3"
-            backgroundColor={colors.primary[400]}
-            >
-            <Box
-                mt="25px"
-                p="0 30px"
-                display="flex "
-                justifyContent="space-between"
-                alignItems="center"
-            >
-                <Box>
-                <Typography
-                    variant="h6"
-                    fontWeight="600"
-                    color={colors.grey[100]}
+                gridColumn="span 8"
+                gridRow="span 3"
+                backgroundColor={colors.primary[400]}
                 >
-                    Valor Medio
-                </Typography>
-                <Typography
-                    variant="h3"
-                    fontWeight="bold"
-                    color={colors.greenAccent[500]}
-                >
-                    {averageMeasurement.toFixed(2)}
-                </Typography>
-                </Box>
-                <Box>
-                <IconButton>
-                    <DownloadOutlinedIcon
-                    sx={{ fontSize: "26px", color: colors.greenAccent[500] }}
-                    />
-                </IconButton>
-                </Box>
+                    <Box display="flex" justifyContent="space-between" alignItems="center" m={2}>
+                        s<ButtonGroup variant="outlined" color="primary" aria-label="Intervalo de Datas">
+                            <Button
+                                onClick={() => handleRangeChange("24h")}
+                                variant={timeFrame === "24h" ? "contained" : "outlined"}
+                            >
+                                24h
+                            </Button>
+                            <Button
+                                onClick={() => handleRangeChange("48h")}
+                                variant={timeFrame === "48h" ? "contained" : "outlined"}
+                            >
+                                48h
+                            </Button>
+                            <Button
+                                onClick={() => handleRangeChange("1w")}
+                                variant={timeFrame === "1w" ? "contained" : "outlined"}
+                            >
+                                1w
+                            </Button>
+                            <Button
+                                onClick={() => handleRangeChange("1m")}
+                                variant={timeFrame === "1m" ? "contained" : "outlined"}
+                            >
+                                1m
+                            </Button>
+                        </ButtonGroup>
+                    </Box>
+                <Box
+                    mt="25px"
+                    p="0 30px"
+                    display="flex "
+                    justifyContent="space-between"
+                    alignItems="center"
+                >   
+                    
+                    <Box>
+                    <Typography
+                        variant="h6"
+                        fontWeight="600"
+                        color={colors.grey[100]}
+                    >
+                        Valor Medio
+                    </Typography>
+                    <Typography
+                        variant="h3"
+                        fontWeight="bold"
+                        color={colors.greenAccent[500]}
+                    >
+                        {averageMeasurement ? averageMeasurement.toFixed(2): 'Sem medições no período'}
+                    </Typography>
+                    </Box>
             </Box>
             <Box height="250px" m="-20px 0 0 0">
                 {dataChart.length > 0 && <LineChart isDashboard={true} sensor={selectedEquipment} dataChart={dataChart}/> }
             </Box>
             </Box>
             <Box
-            gridColumn="span 4"
-            gridRow="span 3"
-            backgroundColor={colors.primary[400]}
-            overflow="auto"
-            >
-            <Box
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-                borderBottom={`4px solid ${colors.primary[500]}`}
-                colors={colors.grey[100]}
-                p="15px"
-            >
-                <Typography color={colors.grey[100]} variant="h5" fontWeight="600">
-                Ultimas Mediçõess
-                </Typography>
-            </Box>
-            {dataChart.map((measurement, i) => (
-                <Box
-                key={`${measurement.id}-${i}`}
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-                borderBottom={`4px solid ${colors.primary[500]}`}
-                p="15px"
+                gridColumn="span 4"
+                gridRow="span 3"
+                backgroundColor={colors.primary[400]}
+                overflow="auto"
                 >
-                <Box>
-                    <Typography
-                    color={colors.greenAccent[500]}
-                    variant="h5"
-                    fontWeight="600"
-                    >
-                    {measurement.equipmentId}
+                <Box
+                    display="flex"
+                    justifyContent="space-between"
+                    alignItems="center"
+                    borderBottom={`4px solid ${colors.primary[500]}`}
+                    colors={colors.grey[100]}
+                    p="15px"
+                >
+                    <Typography color={colors.grey[100]} variant="h5" fontWeight="600">
+                    Ultimas Mediçõess
                     </Typography>
                 </Box>
-                <Box color={colors.grey[100]}>{formatDate(measurement.timestamp)}</Box>
-                <Box
-                    backgroundColor={colors.greenAccent[500]}
-                    p="5px 10px"
-                    borderRadius="4px"
-                >
-                    {measurement.value.toFixed(2)}
-                </Box>
-                </Box>
-            ))}
+                {dataChart.map((measurement, i) => (
+                    <Box
+                    key={`${measurement.id}-${i}`}
+                    display="flex"
+                    justifyContent="space-between"
+                    alignItems="center"
+                    borderBottom={`4px solid ${colors.primary[500]}`}
+                    p="15px"
+                    >
+                    <Box>
+                        <Typography
+                        color={colors.greenAccent[500]}
+                        variant="h5"
+                        fontWeight="600"
+                        >
+                        {measurement.equipmentId}
+                        </Typography>
+                    </Box>
+                    <Box color={colors.grey[100]}>{formatDate(measurement.timestamp)}</Box>
+                    <Box
+                        backgroundColor={colors.greenAccent[500]}
+                        p="5px 10px"
+                        borderRadius="4px"
+                    >
+                        {measurement.value.toFixed(2)}
+                    </Box>
+                    </Box>
+                ))}
             </Box>
         </Box>
         </Box>

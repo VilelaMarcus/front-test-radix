@@ -46,12 +46,14 @@ const LineChart = ({ dataChart = [], sensor= '', isDashboard = false }) => {
             },
             text: {
               fill: colors.grey[100],
+              fontSize: 16, // Ajuste o tamanho da fonte aqui
             },
           },
         },
         legends: {
           text: {
             fill: colors.grey[100],
+            fontSize: 15,
           },
         },
         tooltip: {
@@ -85,7 +87,7 @@ const LineChart = ({ dataChart = [], sensor= '', isDashboard = false }) => {
       }}
       axisLeft={{
         orient: "left",
-        tickValues: 5, // added
+        tickValues: 8, // added
         tickSize: 3,
         tickPadding: 5,
         tickRotation: 0,
@@ -113,7 +115,7 @@ const LineChart = ({ dataChart = [], sensor= '', isDashboard = false }) => {
           itemWidth: 80,
           itemHeight: 20,
           itemOpacity: 0.75,
-          symbolSize: 12,
+          symbolSize: 20,
           symbolShape: "circle",
           symbolBorderColor: "rgba(0, 0, 0, .5)",
           effects: [
