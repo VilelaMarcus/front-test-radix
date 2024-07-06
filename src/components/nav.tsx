@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useState } from "react";
 import Image from "next/image";
-import AttachFileIcon from "@mui/icons-material/AttachFile";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 
 const Navbar = () => {
@@ -25,13 +24,13 @@ const Navbar = () => {
                     </Link>
                 </div>            
                 <div className="relative group">
-                    <div className="relative" onClick={() => console.log('teste')}>
-                        <PersonOutlinedIcon className="w-6 h-6 text-white cursor-pointer"/>
-                        <div className="absolute hidden bg-transparent text-white p-1 rounded-md right-0 top-full mt-1 group-hover:block">
-                            <span className="whitespace-nowrap">Log Out</span>
-                        </div>
-                    </div>
+                <div className="flex items-center" onClick={() => (window.location.href="/api/auth/logout")}>
+                    <PersonOutlinedIcon className="w-6 h-6 text-white cursor-pointer"/>
+                    <span className="text-white ml-1 relative group cursor-pointer">
+                        <span className="transition-all relative group hover:border-b-2 border-white">Log Out</span>
+                    </span>
                 </div>
+            </div>
             </div>
         </nav>
     );

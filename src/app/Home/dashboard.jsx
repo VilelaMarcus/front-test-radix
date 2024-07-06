@@ -1,5 +1,8 @@
 "use client"
+import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { useState, useEffect } from "react";
+import { useUser } from '@auth0/nextjs-auth0/client';
+import { useRouter } from 'next/navigation';
 import { Box, Button, Typography, ButtonGroup } from "@mui/material";
 import { UploadFileOutlined } from "@mui/icons-material";
 import Header from "../../components/Header";
@@ -9,6 +12,7 @@ import Select from 'react-select'
 import { formatDate } from "../../utils/parseDate";
 import UploadCsvModal from "../upload-csv/UploadCsvModal";
 
+
 const Dashboard = () => {
     const [equipments, setEquipments] = useState([]);
     const [selectedEquipment, setSelectedEquipment] = useState('EQ-0010');
@@ -17,6 +21,15 @@ const Dashboard = () => {
     const [dataChart, setDataChart] = useState([]);
     const [modalOpen, setModalOpen] = useState(false);
 
+    const { user, isLoading } = useUser();
+    const router = useRouter();
+
+    if (!isLoading && !user) {
+        router.push('/api/auth/login');
+    }
+
+    console.log({user});
+
     const handleClickOpen = () => {
         setModalOpen(true);
     };
@@ -24,7 +37,6 @@ const Dashboard = () => {
     const handleClose = () => {
         setModalOpen(false);
     };
-
 
     const handleFileUpload = async (file) => {
         const formData = new FormData();
@@ -264,5 +276,6 @@ const Dashboard = () => {
         </Box>
     );
 };
+export const getServerSideProps = withPageAuthRequired();
 
 export default Dashboard;
